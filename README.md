@@ -1,14 +1,16 @@
-# token-budget-tools
+# slim-margin
 
-A Claude Code plugin marketplace containing skills for **token-efficient work** on data engineering and architecture tasks.
+> Run Claude on a slim token margin. Spend the budget on decisions, not comprehension.
 
-Currently ships one plugin: [`token-budget-discipline`](./plugins/token-budget-discipline).
+A Claude Code plugin that enforces **token-budget discipline** and **smart model-tier routing** (Opus / Sonnet / Haiku) on long, complex, or codebase-heavy tasks.
+
+This repo is both the plugin and its marketplace — one `/plugin marketplace add` away from being installable.
 
 ---
 
 ## ⚠️ Required prerequisites
 
-This plugin is an **orchestrator**. It does not do codebase digestion, session memory, or output compression itself — it coordinates three other skills that do. **You must install all three before installing this plugin**, or it will refuse to run.
+`slim-margin` is an **orchestrator**. It does not do codebase digestion, session memory, or output compression itself — it coordinates three other skills that do. **You must install all three before installing `slim-margin`**, or it will refuse to run.
 
 | Skill | Repo | What it does |
 | --- | --- | --- |
@@ -34,29 +36,27 @@ claude plugin marketplace add JuliusBrussee/caveman
 claude plugin install caveman@caveman
 ```
 
-Restart Claude Code after installing each one. Verify they're active before installing `token-budget-discipline`.
+Restart Claude Code after installing each one. Verify they're active before installing `slim-margin`.
 
 **Why hard deps?** The skill's whole premise is that you don't burn tokens doing work these three tools already do. If they're not there, the skill degrading to manual reads would defeat its own purpose. It fails closed on purpose.
 
 ---
 
-## What `token-budget-discipline` does
+## What `slim-margin` does
 
-Enforces **token-budget discipline** and **smart model-tier routing** (Opus / Sonnet / Haiku) on long, complex, or codebase-heavy tasks.
-
-On big tasks — designing pipelines, refactoring across files, reviewing architecture — Claude's default instinct is to grep and read source files directly and burn the context window on comprehension. By the time it has "understood" everything, the budget is gone and the actual work never happens. This skill forces:
+On big tasks — designing pipelines, refactoring across files, reviewing architecture — Claude's default instinct is to grep and read source files directly and burn the context window on comprehension. By the time it has "understood" everything, the budget is gone and the actual work never happens. `slim-margin` forces a different pattern:
 
 1. **Check prerequisites.** If graphify / claude-mem / caveman aren't installed, refuse.
 2. **Ask for the budget.** No budget, no work.
 3. **Pull prior context from claude-mem** before asking or exploring.
 4. **Read the graphify report** before opening any raw file.
-5. **Route by tier**: Haiku does mechanical classification, Sonnet synthesizes, Opus only gets called in for the hard judgment calls — with distilled context, never raw files.
+5. **Route by tier.** Haiku does mechanical classification, Sonnet synthesizes, Opus only gets called in for the hard judgment calls — with distilled context, never raw files.
 6. **Keep caveman on** so output doesn't eat the budget wrapper.
 7. **Track token usage** at checkpoints and stop to reconfirm before blowing past 80%.
 
 The budget constraint becomes a forcing function for smarter orchestration, not an excuse to underperform.
 
-Full skill text: [`plugins/token-budget-discipline/skills/token-budget-discipline/SKILL.md`](./plugins/token-budget-discipline/skills/token-budget-discipline/SKILL.md)
+Full skill text: [`plugins/slim-margin/skills/slim-margin/SKILL.md`](./plugins/slim-margin/skills/slim-margin/SKILL.md)
 
 ---
 
@@ -67,30 +67,30 @@ Full skill text: [`plugins/token-budget-discipline/skills/token-budget-disciplin
 ### In Claude Code
 
 ```bash
-/plugin marketplace add <your-username>/token-budget-discipline
-/plugin install token-budget-discipline@token-budget-tools
+/plugin marketplace add <your-username>/slim-margin
+/plugin install slim-margin@slim-margin
 ```
 
 ### In Claude.ai (as a raw skill)
 
-Download `token-budget-discipline.skill` from the [Releases](../../releases) page and upload via Settings → Capabilities → Skills.
+Download `slim-margin.skill` from the [Releases](../../releases) page and upload via Settings → Capabilities → Skills.
 
-Note: the Claude.ai upload path does not automatically install the three prerequisite skills. The skill will still refuse to run until they're present — on Claude.ai this is a harder lift since the prerequisites are Claude Code plugins. This plugin is most useful in a Claude Code environment.
+Note: the Claude.ai upload path does not automatically install the three prerequisite skills. The skill will still refuse to run until they're present — on Claude.ai this is a harder lift since the prerequisites are Claude Code plugins. `slim-margin` is most useful in a Claude Code environment.
 
 ---
 
 ## Repo layout
 
 ```
-token-budget-discipline/                       (marketplace repo root)
+slim-margin/                                   (marketplace repo root)
 ├── .claude-plugin/
 │   └── marketplace.json                       ← marketplace catalog
 ├── plugins/
-│   └── token-budget-discipline/               ← the plugin
+│   └── slim-margin/                           ← the plugin
 │       ├── .claude-plugin/
 │       │   └── plugin.json                    ← plugin manifest
 │       └── skills/
-│           └── token-budget-discipline/
+│           └── slim-margin/
 │               └── SKILL.md                   ← the skill itself
 ├── .github/workflows/
 │   └── package.yml                            ← auto-builds .skill on tag push
@@ -109,13 +109,19 @@ git tag v0.1.0
 git push origin v0.1.0
 ```
 
-The GitHub Action validates the manifest files, zips the skill into `token-budget-discipline.skill`, and attaches it to the GitHub release.
+The GitHub Action validates the manifest files, zips the skill into `slim-margin.skill`, and attaches it to the GitHub release.
+
+---
+
+## A note on the name
+
+`slim-margin` because that's what you're running on when the budget matters. Slim margins demand discipline: no wasted reads, no wasted tier, no wasted words. If you have abundant context, you don't need this skill. If you're on a slim margin, you do.
 
 ---
 
 ## Credit
 
-This plugin is a thin orchestrator on top of the hard work of three upstream authors:
+`slim-margin` is a thin orchestrator on top of the hard work of three upstream authors:
 
 - [Julius Brussee](https://github.com/JuliusBrussee) for **caveman**
 - [Safi Shamsi](https://github.com/safishamsi) for **graphify**

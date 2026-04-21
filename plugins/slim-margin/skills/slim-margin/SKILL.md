@@ -1,9 +1,9 @@
 ---
-name: token-budget-discipline
+name: slim-margin
 description: Enforce strict token-budget discipline AND smart model-tier routing (Opus / Sonnet / Haiku) on long, complex, or codebase-heavy tasks. Use this skill whenever the user mentions a token budget, rate limit, context limit, token pressure, "stay under X tokens", or any form of model-switching / cost-optimization concern — and also proactively on any sufficiently large task (multi-file refactors, new pipeline designs, cross-repo work, architecture reviews) where tokens could easily be wasted re-reading code that should have been pre-digested, or where the wrong model tier would be assigned to subtasks. Triggers on keywords like "rate limit", "token budget", "context window", "stay under", "don't blow the budget", "use a cheaper model", "save tokens", "auto-switch models", "Haiku for this", and on any request where scope clearly exceeds casual handling. This skill has HARD DEPENDENCIES on three installed skills — graphify (knowledge graph of the codebase), claude-mem (persistent session memory), and caveman (output compression). Without all three installed, this skill refuses to proceed and instructs the user to install them. When all three are present, the skill orchestrates them: check claude-mem for prior context, use graphify to navigate by structure instead of grepping, keep caveman active to compress output, and route subtasks across Haiku / Sonnet / Opus so cheap mechanical work doesn't burn premium tier budget.
 ---
 
-# Token Budget Discipline
+# slim-margin
 
 A skill for spending tokens on what matters — planning, decisions, architecture — instead of burning them re-reading code that could be navigated by structure, re-learning context that was already captured last session, or emitting verbose prose no one needed.
 

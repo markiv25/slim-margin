@@ -15,11 +15,11 @@ jobs:
 
       - name: Build .skill archive
         run: |
-          SKILL_DIR="plugins/token-budget-discipline/skills/token-budget-discipline"
+          SKILL_DIR="plugins/slim-margin/skills/slim-margin"
           cd "$SKILL_DIR"
-          zip -r "$GITHUB_WORKSPACE/token-budget-discipline.skill" .
+          zip -r "$GITHUB_WORKSPACE/slim-margin.skill" .
           cd "$GITHUB_WORKSPACE"
-          ls -la token-budget-discipline.skill
+          ls -la slim-margin.skill
 
       - name: Validate marketplace.json
         run: |
@@ -28,18 +28,18 @@ jobs:
 
       - name: Validate plugin.json
         run: |
-          python3 -c "import json; json.load(open('plugins/token-budget-discipline/.claude-plugin/plugin.json'))"
+          python3 -c "import json; json.load(open('plugins/slim-margin/.claude-plugin/plugin.json'))"
           echo "plugin.json is valid JSON"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: token-budget-discipline
-          path: token-budget-discipline.skill
+          name: slim-margin
+          path: slim-margin.skill
 
       - name: Attach to release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-          files: token-budget-discipline.skill
+          files: slim-margin.skill
           generate_release_notes: true

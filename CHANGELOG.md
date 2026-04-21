@@ -1,12 +1,12 @@
 # Changelog
 
-All notable changes to this plugin will be documented in this file.
+All notable changes to `slim-margin` will be documented in this file.
 
 ## [0.1.0] - 2026-04-20
 
 ### Added
 - Initial release as a Claude Code marketplace plugin.
-- `token-budget-discipline` skill: budget discipline workflow + model-tier routing + output compression orchestration.
+- `slim-margin` skill: budget discipline workflow + model-tier routing + output compression orchestration.
 - Hard dependencies on three upstream skills:
   - **graphify** (safishamsi/graphify) for codebase knowledge graph.
   - **claude-mem** (thedotmack/claude-mem) for persistent session memory.
