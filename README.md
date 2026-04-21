@@ -67,7 +67,7 @@ Full skill text: [`plugins/slim-margin/skills/slim-margin/SKILL.md`](./plugins/s
 ### In Claude Code
 
 ```bash
-/plugin marketplace add <your-username>/slim-margin
+/plugin marketplace add markiv25/slim-margin
 /plugin install slim-margin@slim-margin
 ```
 
