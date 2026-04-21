@@ -1,0 +1,19 @@
+{
+  "name": "token-budget-tools",
+  "owner": {
+    "name": "Your Name"
+  },
+  "metadata": {
+    "description": "Skills for token-efficient work with Claude on data engineering and architecture tasks."
+  },
+  "plugins": [
+    {
+      "name": "token-budget-discipline",
+      "source": "./plugins/token-budget-discipline",
+      "description": "Enforces token-budget discipline and smart model-tier routing (Opus/Sonnet/Haiku) on long, complex, or codebase-heavy tasks.",
+      "category": "productivity",
+      "tags": ["tokens", "budget", "cost-optimization", "model-routing", "data-engineering"],
+      "keywords": ["token-budget", "rate-limit", "opus", "sonnet", "haiku", "context-window"]
+    }
+  ]
+}
