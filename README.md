@@ -6,53 +6,76 @@ Currently ships one plugin: [`token-budget-discipline`](./plugins/token-budget-d
 
 ---
 
-## What's in here
+## ⚠️ Required prerequisites
 
-### `token-budget-discipline`
+This plugin is an **orchestrator**. It does not do codebase digestion, session memory, or output compression itself — it coordinates three other skills that do. **You must install all three before installing this plugin**, or it will refuse to run.
 
-Enforces **token-budget discipline** and **smart model-tier routing** (Opus / Sonnet / Haiku) on long, complex, or codebase-heavy tasks.
+| Skill | Repo | What it does |
+| --- | --- | --- |
+| **graphify** | [safishamsi/graphify](https://github.com/safishamsi/graphify) | Builds a persistent knowledge graph of your codebase. Claude reads the graph instead of grepping raw files. |
+| **claude-mem** | [thedotmack/claude-mem](https://github.com/thedotmack/claude-mem) | Captures and compresses session history so future sessions start with relevant context already loaded. |
+| **caveman** | [JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman) | Strips filler and hedging from Claude's output. ~75% fewer output tokens, same technical content. |
 
-On big tasks — designing pipelines, refactoring across files, reviewing architecture — Claude's default instinct is to read source files directly and burn the context window on comprehension. By the time it has "understood" everything, the budget is gone and the actual work never happens. This skill forces:
+### Install the prerequisites
 
-1. **Ask for the budget** before doing anything.
-2. **Pre-digest the codebase** with cheaper, purpose-built skills (`/caveman`, `/graphify`, `/claude-mem`) *before* opening raw source.
-3. **Route by tier**: Haiku does mechanical digestion, Sonnet synthesizes, Opus only gets called in for the hard judgment calls — with distilled context, never raw files.
-4. **Track token usage** at checkpoints and stop to reconfirm before blowing past 80%.
+```bash
+# 1. graphify (requires Python 3.10+)
+pip install graphifyy
+graphify install
+# then, from inside your project:
+graphify claude install
 
-The budget constraint becomes a forcing function for smarter orchestration, not an excuse to underperform.
+# 2. claude-mem (run inside a Claude Code session)
+/plugin marketplace add thedotmack/claude-mem
+/plugin install claude-mem
 
-Full skill content: [`plugins/token-budget-discipline/skills/token-budget-discipline/SKILL.md`](./plugins/token-budget-discipline/skills/token-budget-discipline/SKILL.md)
+# 3. caveman (run inside a Claude Code session)
+claude plugin marketplace add JuliusBrussee/caveman
+claude plugin install caveman@caveman
+```
+
+Restart Claude Code after installing each one. Verify they're active before installing `token-budget-discipline`.
+
+**Why hard deps?** The skill's whole premise is that you don't burn tokens doing work these three tools already do. If they're not there, the skill degrading to manual reads would defeat its own purpose. It fails closed on purpose.
 
 ---
 
-## Install
+## What `token-budget-discipline` does
 
-### In Claude Code (recommended)
+Enforces **token-budget discipline** and **smart model-tier routing** (Opus / Sonnet / Haiku) on long, complex, or codebase-heavy tasks.
 
-Add this repository as a marketplace, then install the plugin:
+On big tasks — designing pipelines, refactoring across files, reviewing architecture — Claude's default instinct is to grep and read source files directly and burn the context window on comprehension. By the time it has "understood" everything, the budget is gone and the actual work never happens. This skill forces:
+
+1. **Check prerequisites.** If graphify / claude-mem / caveman aren't installed, refuse.
+2. **Ask for the budget.** No budget, no work.
+3. **Pull prior context from claude-mem** before asking or exploring.
+4. **Read the graphify report** before opening any raw file.
+5. **Route by tier**: Haiku does mechanical classification, Sonnet synthesizes, Opus only gets called in for the hard judgment calls — with distilled context, never raw files.
+6. **Keep caveman on** so output doesn't eat the budget wrapper.
+7. **Track token usage** at checkpoints and stop to reconfirm before blowing past 80%.
+
+The budget constraint becomes a forcing function for smarter orchestration, not an excuse to underperform.
+
+Full skill text: [`plugins/token-budget-discipline/skills/token-budget-discipline/SKILL.md`](./plugins/token-budget-discipline/skills/token-budget-discipline/SKILL.md)
+
+---
+
+## Install this plugin
+
+**Only after** installing graphify, claude-mem, and caveman as shown above.
+
+### In Claude Code
 
 ```bash
 /plugin marketplace add <your-username>/token-budget-discipline
 /plugin install token-budget-discipline@token-budget-tools
 ```
 
-Or from the CLI:
-
-```bash
-claude plugin marketplace add <your-username>/token-budget-discipline
-claude plugin install token-budget-discipline@token-budget-tools
-```
-
 ### In Claude.ai (as a raw skill)
 
-1. Download `token-budget-discipline.skill` from the [Releases](../../releases) page.
-2. Settings → Capabilities → Skills → Upload.
+Download `token-budget-discipline.skill` from the [Releases](../../releases) page and upload via Settings → Capabilities → Skills.
 
-The GitHub Actions workflow in this repo auto-builds the `.skill` file whenever you tag a release (see below).
-
-### Via the Claude API
-
-Upload the `SKILL.md` via the Skills API. See [docs.claude.com](https://docs.claude.com/en/api/overview).
+Note: the Claude.ai upload path does not automatically install the three prerequisite skills. The skill will still refuse to run until they're present — on Claude.ai this is a harder lift since the prerequisites are Claude Code plugins. This plugin is most useful in a Claude Code environment.
 
 ---
 
@@ -77,20 +100,6 @@ token-budget-discipline/                       (marketplace repo root)
 └── .gitignore
 ```
 
-This structure follows the [Claude Code marketplace spec](https://code.claude.com/docs/en/plugin-marketplaces), so one repo serves three audiences: Claude Code users (via `/plugin install`), Claude.ai users (via the `.skill` file on Releases), and API users (who can upload the `SKILL.md` directly).
-
----
-
-## Dependencies
-
-The skill references three other skills by name:
-
-- `/caveman` — terse file/module summaries
-- `/graphify` — structural understanding, dependency graphs
-- `/claude-mem` — memory of prior sessions on the same codebase
-
-If they're not installed, the skill explicitly tells the user and asks how to proceed — it does not silently fall back to reading raw source.
-
 ---
 
 ## Cutting a release
@@ -100,19 +109,25 @@ git tag v0.1.0
 git push origin v0.1.0
 ```
 
-The GitHub Action zips `plugins/token-budget-discipline/skills/token-budget-discipline/` into `token-budget-discipline.skill` and attaches it to the GitHub release.
+The GitHub Action validates the manifest files, zips the skill into `token-budget-discipline.skill`, and attaches it to the GitHub release.
 
 ---
 
-## Listing in the official Anthropic marketplace
+## Credit
 
-This repo is structured so it *could* later be submitted to [`anthropics/claude-plugins-official`](https://github.com/anthropics/claude-plugins-official). That's a separate review process — start here, build usage, then submit.
+This plugin is a thin orchestrator on top of the hard work of three upstream authors:
+
+- [Julius Brussee](https://github.com/JuliusBrussee) for **caveman**
+- [Safi Shamsi](https://github.com/safishamsi) for **graphify**
+- [Alex Newman (thedotmack)](https://github.com/thedotmack) for **claude-mem**
+
+If this skill saves you tokens, go star their repos too.
 
 ---
 
 ## Contributing
 
-Issues and PRs welcome. The skill is opinionated — open an issue before a large PR so we can discuss direction.
+Issues and PRs welcome. The skill is deliberately opinionated — open an issue before a large PR so we can discuss direction.
 
 ## License
 

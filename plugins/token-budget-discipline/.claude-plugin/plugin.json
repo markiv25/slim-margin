@@ -1,10 +1,10 @@
 {
   "name": "token-budget-discipline",
-  "description": "Enforces token-budget discipline and smart model-tier routing (Opus/Sonnet/Haiku) on long, complex, or codebase-heavy tasks. Forces pre-digestion of codebases with cheaper skills before reading raw source.",
+  "description": "Enforces token-budget discipline and smart model-tier routing (Opus/Sonnet/Haiku) on long, complex, or codebase-heavy tasks. Orchestrates three hard-dependency skills: graphify (codebase knowledge graph), claude-mem (persistent session memory), and caveman (output compression). Fails closed if any dependency is missing — the skill's whole premise is not doing work those tools already do.",
   "version": "0.1.0",
   "author": {
     "name": "Your Name"
   },
   "license": "MIT",
-  "keywords": ["token-budget", "rate-limit", "cost-optimization", "model-routing", "data-engineering", "architecture"]
+  "keywords": ["token-budget", "rate-limit", "cost-optimization", "model-routing", "data-engineering", "architecture", "graphify", "claude-mem", "caveman", "orchestrator"]
 }

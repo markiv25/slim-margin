@@ -4,16 +4,16 @@
     "name": "Your Name"
   },
   "metadata": {
-    "description": "Skills for token-efficient work with Claude on data engineering and architecture tasks."
+    "description": "Skills for token-efficient work with Claude on data engineering and architecture tasks. Orchestrates graphify, claude-mem, and caveman."
   },
   "plugins": [
     {
       "name": "token-budget-discipline",
       "source": "./plugins/token-budget-discipline",
-      "description": "Enforces token-budget discipline and smart model-tier routing (Opus/Sonnet/Haiku) on long, complex, or codebase-heavy tasks.",
+      "description": "Enforces token-budget discipline and smart model-tier routing (Opus/Sonnet/Haiku) on long, complex, or codebase-heavy tasks. REQUIRES graphify, claude-mem, and caveman — fails closed if any are missing.",
       "category": "productivity",
-      "tags": ["tokens", "budget", "cost-optimization", "model-routing", "data-engineering"],
-      "keywords": ["token-budget", "rate-limit", "opus", "sonnet", "haiku", "context-window"]
+      "tags": ["tokens", "budget", "cost-optimization", "model-routing", "data-engineering", "orchestrator"],
+      "keywords": ["token-budget", "rate-limit", "opus", "sonnet", "haiku", "context-window", "graphify", "claude-mem", "caveman"]
     }
   ]
 }
